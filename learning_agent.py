@@ -122,7 +122,18 @@ def query_knowledge_graph(graph_rag_retriever):
     nodes = graph_rag_retriever.retrieve(question)
     return response, nodes
 
-# def save_history_data(queries, response, keyword):
+def save_history_data(queries, response, keyword):
+    """
+    keywords = rerank mode or normal mode
+    save all queries and related answer, and knowledge related to this Q&A into database.
+    The next time when user start to review, we can simply generate a cheat sheet for them.
+    data will be stored in structured database
+    """
+
+
+
+
+
 
 
 if __name__ == "__main__":

@@ -24,4 +24,3 @@ logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
 # This agent is used to help student review courses based on their query history.
 # All the previous Q&A will be stored in a database, this database will be used in the further query test.
-
