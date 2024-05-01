@@ -113,7 +113,7 @@ def get_random_qa_pair():
     
     return None, None  # 如果文件中没有聊天记录
 
-
+icon_path = r"image\icon.png"
 # Streamlit app initialization
 st.title("Chat with your PDF📄")
 # st.markdown("Built by [Qichen❤️]()")
@@ -124,6 +124,7 @@ if 'messages' not in st.session_state:
         {'role': 'assistant', "content": 'Hello! Upload a PDF and ask me anything about its content.'}]
 
 with st.sidebar:
+    st.image(icon_path, use_column_width=True)
     st.title("Menu:")
     uploaded_file = st.file_uploader("Upload your PDF Files and Click on the Submit & Process Button")
     if st.button("Submit & Process"):
