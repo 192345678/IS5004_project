@@ -2,6 +2,7 @@ import logging
 import sys
 from llama_index.core import StorageContext, load_index_from_storage
 from llama_index.core.graph_stores import SimpleGraphStore
+
 # logging
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 # RAG + rerank 方法，
@@ -30,16 +31,20 @@ def ingest_and_index(data_dir, PERSIST_DIR):
     splitter = SentenceSplitter(chunk_size=256)
     index = VectorStoreIndex.from_documents(documents, transformations=[splitter], show_progress=True)
     index.storage_context.persist(persist_dir=PERSIST_DIR)
+    print("index saved")
+
 
 # 使用PDF READER 导入数据
-def ingest_and_index_with_pdf_reader(data_path):
+def ingest_and_index_with_pdf_reader(data_path, PERSIST_DIR):
     loader = PyMuPDFReader()
     documents = loader.load_data(file_path=Path(data_path), metadata=True)
-    index_pdf = VectorStoreIndex.from_documents(documents, show_progress = True)
-    return index_pdf
+    index_pdf = VectorStoreIndex.from_documents(documents, show_progress=True)
+    index_pdf.storage_context.persist(persist_dir=PERSIST_DIR)
+    print("index done and save")
+
 
 # 使用 knowledge graph 存储导入后的index，好像还有其他load_index方法可以尝试
-def index_and_ingest_knowledge_graph(data_dir):
+def index_and_ingest_knowledge_graph(data_dir, PERSIST_DIR):
     documents = SimpleDirectoryReader(data_dir.load_data())
     graph_store = SimpleGraphStore()
     storage_context = StorageContext.from_defaults(graph_store=graph_store)
@@ -50,12 +55,16 @@ def index_and_ingest_knowledge_graph(data_dir):
         max_triplets_per_chunk=2,
         storage_context=storage_context,
     )
+    index_graph.storage_context.persist(persist_dir=PERSIST_DIR)
     print("graph index done")
-    return index_graph
 
 
 # 重排 index 的retrieve 方法
-def retriever_rerank(index):
+def retriever_rerank(persist_dir):
+    # rebuild storage context
+    storage_context = StorageContext.from_defaults(persist_dir=persist_dir)
+    # load index
+    index = load_index_from_storage(storage_context)
     vector_retriever = index.as_retriever(similarity_top_k=10)
     bm25_retriever = BM25Retriever.from_defaults(
         docstore=index.docstore, similarity_top_k=10
@@ -68,7 +77,7 @@ def retriever_rerank(index):
         use_async=True,
         verbose=True,
         query_gen_prompt=
-            "You are a helpful assistant that generates multiple search queries based on a "
+        "You are a helpful assistant that generates multiple search queries based on a "
         "single input query. Generate {num_queries} search queries, one on each line, "
         "related to the following input query:\n"
         "Query: {query}\n"
@@ -78,49 +87,59 @@ def retriever_rerank(index):
     print("done")
     return retriever
 
+
 # knowledge graph retriever
-def retriever_knowledge_graph(index_g):
+def retriever_knowledge_graph(persist_dir):
+    # rebuild storage context
+    storage_context = StorageContext.from_defaults(persist_dir=persist_dir)
+    # load index
+    index_g = load_index_from_storage(storage_context)
     graph_rag_retriever = index_g.as_retriever()
     print("graph retrieve done")
     return graph_rag_retriever
 
+
 # 普通 query engine
-def query_normal(retriever):
-    query_engine = RetrieverQueryEngine.from_args(retriever)
+def query_normal(retriever, question):
+    # query_engine = RetrieverQueryEngine.from_args(retriever)
+    # streaming
+    query_engine = RetrieverQueryEngine.from_args(retriever, streaming=True)
     # apply nested async to run in a notebook
     nest_asyncio.apply()
 
-    question = """ You are a skilled teaching assistant with 10 years of experience in Artificial Intelligence, particularly Natural Language Processing. You have two main job responsibilities:
-        1. Discover the parts of the course lesson plan that students are more interested in through dialogue with them. At the same time, you will combine your knowledge to introduce the relevant content to the students, so that the students can have a deeper understanding of the relevant content in the lesson plan that they are interested in or don't know much about yet.
-        2. Answer students' questions about AI and practical language processing according to the course handout, trying to explain it step by step to ensure that students can fully understand all the concepts or related applications, and give some code as examples if necessary. If you can find relevant information in the course handouts, please try to answer based on your own knowledge and experience. Remember not to give incorrect answers. If you are unsure of an answer, tell the student that you are unsure. If the answer is correct and accurate, you will be paid well. Therefore, please try to address all questions asked by the student.
-  
-        Question: 请为我解释课件第{i}页的含义"""
+    # question = """ You are a skilled teaching assistant with 10 years of experience in Artificial Intelligence, particularly Natural Language Processing. You have two main job responsibilities:
+    #     1. Discover the parts of the course lesson plan that students are more interested in through dialogue with them. At the same time, you will combine your knowledge to introduce the relevant content to the students, so that the students can have a deeper understanding of the relevant content in the lesson plan that they are interested in or don't know much about yet.
+    #     2. Answer students' questions about AI and practical language processing according to the course handout, trying to explain it step by step to ensure that students can fully understand all the concepts or related applications, and give some code as examples if necessary. If you can find relevant information in the course handouts, please try to answer based on your own knowledge and experience. Remember not to give incorrect answers. If you are unsure of an answer, tell the student that you are unsure. If the answer is correct and accurate, you will be paid well. Therefore, please try to address all questions asked by the student.
+    #
+    #     Question: 请为我解释课件第{i}页的含义"""
     nodes = retriever.retrieve(question)
     response = query_engine.query(question)
+    print(response)
     return response, nodes
 
 
 def query_knowledge_graph(graph_rag_retriever):
-    question =  """
+    question = """
         You are a skilled teaching assistant with 10 years of experience in Artificial Intelligence, particularly Natural Language Processing. You have two main job responsibilities:\
     1. Discover the parts of the course lesson plan that students are more interested in through dialogue with them. At the same time, you will combine your knowledge to introduce the relevant content to the students, so that the students can have a deeper understanding of the relevant content in the lesson plan that they are interested in or don't know much about yet.
     2. Answer students' questions about AI and practical language processing according to the course handout, trying to explain it step by step to ensure that students can fully understand all the concepts or related applications, and give some code as examples if necessary. If you can find relevant information in the course handouts, please try to answer based on your own knowledge and experience. Remember not to give incorrect answers. If you are unsure of an answer, tell the student that you are unsure. If the answer is correct and accurate, you will be paid well. Therefore, please try to address all questions asked by the student.
-    
-    
+
+
     Question: 请为我解释课件第10页seq to seq结构图的含义
     """
     # configure response synthesizer
     response_synthesizer = get_response_synthesizer()
 
     # assemble query engine
-    query_engine = RetrieverQueryEngine(
-        retriever=graph_rag_retriever,
-        response_synthesizer=response_synthesizer,
-        node_postprocessors=[SimilarityPostprocessor(similarity_cutoff=0.5)],
-    )
+    query_engine = RetrieverQueryEngine(streaming=True,
+                                        retriever=graph_rag_retriever,
+                                        response_synthesizer=response_synthesizer,
+                                        node_postprocessors=[SimilarityPostprocessor(similarity_cutoff=0.5)],
+                                        )
     response = query_engine.query(question)
     nodes = graph_rag_retriever.retrieve(question)
     return response, nodes
+
 
 def save_history_data(queries, response, keyword):
     """
@@ -131,15 +150,16 @@ def save_history_data(queries, response, keyword):
     """
 
 
-
-
-
-
-
 if __name__ == "__main__":
     data_dir = "dataset"
     per_dir = "db"
     print("start indexing ...")
-    index = ingest_and_index(data_dir, per_dir)
+    ingest_and_index(data_dir, per_dir)
     print("start retrieve")
-    retriever = retriever_rerank(index)
+    retriever = retriever_rerank(per_dir)
+    print("start query")
+    while True:
+        question = input("请输入您的问题：")
+        print(question)
+        response, nodes = query_normal(retriever, question)
+        response.print_response_stream()
