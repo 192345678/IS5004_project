@@ -10,7 +10,7 @@ pinned: false
 ---
 
 ## SECTION 1 : PROJECT TITLE
-## TITLE
+## LearnSphere Navigator - A Courseware Intelligent Assistant System
 
 ---
 ## SECTION 2: EXECUTIVE SUMMARY
@@ -22,7 +22,7 @@ pinned: false
 
 | Official Full Name  | Student ID (MTech Applicable)  | Work Items (Who Did What) | Email (Optional) |
 | :------------ |:---------------:| :-----| :-----|
-|Huang Qichen|No.|contribution|e1221634@u.nus.edu|
+|Huang Qichen|A0285822X|contribution|e1221634@u.nus.edu|
 |WEICHUANJIE|A0285709N|contribution|e1221521@u.nus.edu|
 |Yan Zihan|A0285706W|contribution|e1221518@u.nus.edu|
 
