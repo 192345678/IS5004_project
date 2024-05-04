@@ -12,6 +12,7 @@ from datetime import datetime
 import random
 import learning_agent
 import review_agent
+import openai
 
 @st.cache_data()
 def get_base64_of_bin_file(png_file):
@@ -140,30 +141,73 @@ print(user, answer)
 
 if user is not None and answer is not None:
     # 存储到会话状态中
-    st.session_state['current_qa_pair'] = {'user': user, 'answer': answer}
+    openai.api_type = "openai" 
+    # 使用新版 OpenAI 客户端创建 Completion
+    prompt = f"Follow the 2 steps:    1. Generate 3 questions similar to this: {user}.    2. Then expand knowledge points from {answer}."
+    response =  openai.chat.completions.create(
+        model="gpt-3.5-turbo-1106",
+        messages=[
+            {
+            "role": "user",
+            "content": prompt,
+            },
+        ],
+    )
+
+    similar_question = response.choices[0].message.content
+    # print("qa:",similar_question)
+
+    st.session_state['current_qa_pair'] = {'user': user, 'answer': answer, 'similar_question': similar_question}
     # st.rerun()  # 触发刷新以更新显示
 else:
     st.write("No QA pairs found.")
 
 # If Review Mode is activated and we have a QA pair
 if 'current_qa_pair' in st.session_state:
-    # Refresh button to get a new random QA pair
+    # 刷新按钮
     if st.button("Refresh QA"):
-        # 获取新的随机QA对
         user, answer = get_random_qa_pair(name=topic)
 
         if user is not None and answer is not None:
-            st.session_state['current_qa_pair'] = {'user': user, 'answer': answer}
-            st.rerun()  # 触发刷新
+            # 尝试生成类似问题
+            try:
+                openai.api_type = "openai" 
+                # 使用新版 OpenAI 客户端创建 Completion
+                prompt = f"Follow the 2 steps:    1. Generate 3 questions similar to this: {user}.    2. Then expand knowledge points from {answer}."
+                response =  openai.chat.completions.create(
+                    model="gpt-3.5-turbo-1106",
+                    messages=[
+                        {
+                        "role": "user",
+                        "content": prompt,
+                        },
+                    ],
+                )
+
+                similar_question = response.choices[0].message.content
+                # print("qa:",similar_question)
+
+                st.session_state['current_qa_pair'] = {'user': user, 'answer': answer, 'similar_question': similar_question}
+                st.experimental_rerun()  # 触发刷新
+
+            except Exception as e:
+                st.error(f"Error generating similar question: {e}")
+
         else:
             st.write("No QA pairs found.")
 
     st.write("Random QA Pair:")
     qa_pair = st.session_state['current_qa_pair']
+    # print("qapair:",qa_pair)
     user = qa_pair.get("user", "Unknown")
     answer = qa_pair.get("answer", "No answer")
+    similar_question = qa_pair.get("similar_question", "Not available")
+
     st.write(f"User: {user}")
     st.write(f"Answer: {answer}")
+
+    st.write("Question Prompting and Knowledge Point Expansion:")
+    st.write(similar_question)
 
 
 # New code ends here
