@@ -55,7 +55,12 @@ By implementing this automated process, the Courseware Intelligent Assistant Sys
 Run the pip install Command:
 `pip install -r requirements.txt`
 
-### 1.2 Starting the Web Application
+### 1.2 Add your API key
+
+Add your API key into system environment:
+`setx OPENAI_API_KEY "your_openai_api_key"`
+
+### 1.3 Starting the Web Application
 
 Run:
 `streamlit run '.\Study mode.py'`
