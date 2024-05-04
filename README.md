@@ -38,12 +38,13 @@ pinned: false
 
 ### 1.1 Install Dependencies
 
-
-
+Run the pip install Command:
+`pip install -r requirements.txt`
 
 ### 1.2 Starting the Web Application
 
-
+Run:
+`streamlit run '.\Study mode.py'`
 
 ---
 ## SECTION 6 : PROJECT REPORT / PAPER
