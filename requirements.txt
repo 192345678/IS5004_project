@@ -1,0 +1,8 @@
+streamlit
+llama-index
+llama_index.llms.huggingface
+python-dotenv
+llama_index.embeddings.huggingface
+llama-index-retrievers.bm25
+PyMuPDF
+ipython
