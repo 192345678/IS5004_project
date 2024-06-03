@@ -72,4 +72,49 @@ Run:
 
 ---
 
+## SECTION 7 : Further Exploration
+
+A broad view of RAG: https://arxiv.org/pdf/2402.19473
+
+A broad view of Agent: https://arxiv.org/abs/2309.07864
+
+### 7.1 RAG
+
+#### 7.1.1 Foundations
+1) Query-baesd RAG
+   
+    Query-based RAG seamlessly integrates the
+user’s query with insights from retrieved information, feeding
+it directly into the initial stage of the language model’s input. Most common method.
+
+
+2) Latent Representation-based RAG
+
+
+3) Logit-based RAG
+
+
+4) Speculative RAG
+
+#### 7.1.2 Pipe line and enhancements(methods)
+
+1) Input Enhancement:
+    
+    Query transformation: HyDE method: use the original query to
+generate a pseudo document, which is later used as the query
+for retrieval
+
+
+2) Retriever Enhancement:
+
+    Hybrid Retrieval: Hybrid retrieve denotes the concurrent employment of a diverse array of retrieval methodologies
+or the extraction of information from multiple distinct sources(Dense Retriever and sparse retriever). We try C-RAG: CRAG features a retrieval evaluator that gauges document relevance to queries, prompting
+three retrieval responses based on confidence: direct use of
+results for Knowledge Refinement if accurate, Web Search if
+incorrect, and a hybrid approach for ambiguous cases. Related Article: https://blog.csdn.net/L_goodboy/article/details/137581551
+    
+        
+#### 
+
+---
 Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
