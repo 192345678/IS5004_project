@@ -72,49 +72,44 @@ Run:
 
 ---
 
-## SECTION 7 : Further Exploration
 
-A broad view of RAG: https://arxiv.org/pdf/2402.19473
+## SECTION 7: Further Exploration
 
-A broad view of Agent: https://arxiv.org/abs/2309.07864
+- A broad view of RAG: [arxiv](https://arxiv.org/pdf/2402.19473)
+- A broad view of Agent: [arxiv](https://arxiv.org/abs/2309.07864)
 
 ### 7.1 RAG
 
 #### 7.1.1 Foundations
-1) Query-baesd RAG
-   
-    Query-based RAG seamlessly integrates the
-user’s query with insights from retrieved information, feeding
-it directly into the initial stage of the language model’s input. Most common method.
+
+1. Query-based RAG
+    - Query-based RAG seamlessly integrates the user’s query with insights from retrieved information, feeding it directly into the initial stage of the language model’s input. This is the most common method.
+
+2. Latent Representation-based RAG
+
+3. Logit-based RAG
+
+4. Speculative RAG
+
+#### 7.1.2 Pipeline and Enhancements (Methods)
+
+1. Input Enhancement:
+    - Query Transformation:
+        - HyDE method: Use the original query to generate a pseudo document, which is later used as the query for retrieval.
+    - Query Rewrite: Generate additional questions (with LLM) based on the primary query to obtain a more precise retrieved result.
+
+2. Retriever Enhancement:
+    - Knowledge Graph Retrieval: RAG with KG for Customer Service Question Answering [Arxiv](https://arxiv.org/abs/2404.17723) 
+    - Hybrid Retrieval:
+        - Hybrid retrieval denotes the concurrent employment of a diverse array of retrieval methodologies or the extraction of information from multiple distinct sources (Dense Retriever and Sparse Retriever).
+        - C-RAG: CRAG features a retrieval evaluator that gauges document relevance to queries, prompting three retrieval responses based on confidence: direct use of results for Knowledge Refinement if accurate, Web Search if incorrect, and a hybrid approach for ambiguous cases. Related Article: [CSDN Blog](https://blog.csdn.net/L_goodboy/article/details/137581551)
+    - Chunk Optimization:
+        1. Lapping Chunk
+        2. RAPTOR employs recursive embedding, clustering, and summarization of text chunks until further clustering becomes infeasible, thereby constructing a multi-level tree structure.
+        3. Chunk by Segment.
+    - Reranking: Rerank the retrieved contents (from multiple retrievers).
 
 
-2) Latent Representation-based RAG
-
-
-3) Logit-based RAG
-
-
-4) Speculative RAG
-
-#### 7.1.2 Pipe line and enhancements(methods)
-
-1) Input Enhancement:
-    
-    Query transformation: HyDE method: use the original query to
-generate a pseudo document, which is later used as the query
-for retrieval
-
-
-2) Retriever Enhancement:
-
-    Hybrid Retrieval: Hybrid retrieve denotes the concurrent employment of a diverse array of retrieval methodologies
-or the extraction of information from multiple distinct sources(Dense Retriever and sparse retriever). We try C-RAG: CRAG features a retrieval evaluator that gauges document relevance to queries, prompting
-three retrieval responses based on confidence: direct use of
-results for Knowledge Refinement if accurate, Web Search if
-incorrect, and a hybrid approach for ambiguous cases. Related Article: https://blog.csdn.net/L_goodboy/article/details/137581551
-    
-        
-#### 
 
 ---
 Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
