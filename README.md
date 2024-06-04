@@ -109,6 +109,23 @@ Run:
         3. Chunk by Segment.
     - Reranking: Rerank the retrieved contents (from multiple retrievers).
 
+#### 7.1.3
+
+
+#### 7.1.4 Evaluation
+
+1. Retrieval-Augmented Generation Benchmark
+   - [Arxiv](https://arxiv.org/pdf/2309.01431)
+   - [Github](https://github.com/chen700564/RGB)
+   - [Related reference](https://blog.csdn.net/m0_46850835/article/details/136377919)
+
+
+
+2. RAGAs: (Retrieval Augmented Generation Assessment)
+   - [RAGAS: Automated Evaluation of RAG](https://arxiv.org/pdf/2309.15217)
+   - [Github](https://github.com/explodinggradients/ragas)
+
+
 
 
 ---
