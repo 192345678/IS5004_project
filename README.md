@@ -123,10 +123,10 @@ Run:
 
 2. RAGAs: (Retrieval Augmented Generation Assessment)
    - [RAGAS: Automated Evaluation of RAG](https://arxiv.org/pdf/2309.15217)
+   - [RAGAS application](https://segmentfault.com/a/1190000044806908)
    - [Github](https://github.com/explodinggradients/ragas)
 
-
-
+   
 
 ---
 Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
