@@ -125,8 +125,29 @@ Run:
    - [RAGAS: Automated Evaluation of RAG](https://arxiv.org/pdf/2309.15217)
    - [RAGAS application](https://segmentfault.com/a/1190000044806908)
    - [Github](https://github.com/explodinggradients/ragas)
+   - [使用教程](https://github.com/explodinggradients/ragas/blob/main/docs/howtos/integrations/llamaindex.ipynb)
 
-   
+   2.1 Main aspects:
+   - retriever: 
+     - Context_precision: (85%)  Measures how relevant the retrieved context is to the question, conveying the quality of the retrieval pipeline
+     - 大概就是看高相关度 context 是否在靠前的位置被召回
+     - ![](./image/context_precision.png)
+     - Context_recall: Measures the retriever’s ability to retrieve all necessary information required to answer the question. It is computed based on the ground truth and the retrieved context.
+     - 为了从基本真实答案中估算上下文召回率，需要对ground truth中的每个句子进行分析，以确定其是否可归因于检索到的上下文。在理想情况下，ground truth中的所有句子都应归属于检索到的上下文。
+     - ![](./image/context_recall.png)
+   - Generator(LLM): 
+     - Faithfulness: Evaluate hallucinations, measures the factual consistency of the answer to the context based on the question. That is, whether the answer matches the retrieved context.
+     - 如果答案中的所有主张都可以从给定的上下文中推断出来，那么生成的答案就被认为是忠实的
+     - ![](./image/Faithfulness.png)
+
+     - Answer relevancy: Measure how relevant the answers are to the questions, (origin Q) & (Generated Q from origina A) cos-similarity based on embedding
+     - 答案相关性被定义为原始问题与大量人工问题的平均余弦相似度，而人工问题是根据答案生成的（逆向工程）。
+
+3. llamaindex
+
+4. Traditional Information retrieved evaluation
+
+
 
 ---
 Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
