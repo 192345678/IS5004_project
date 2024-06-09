@@ -146,8 +146,16 @@ Run:
 3. llamaindex
 
 4. Traditional Information retrieved evaluation
-
-
-
+   - Hit Rate:
+     - Hit rate calculates the fraction of queries where the correct answer is found within the top-k retrieved documents. In simpler terms, it’s about how often our system gets it right within the top few guesses.
+     - 
+   - NDCG:
+     - NDCG is a metric that evaluates the ranking of retrieved documents. It is calculated by dividing the DCG score of the correct answer by the DCG
+     - 
+   - Mean Reciprocal Rank (MRR):
+     - For each query, MRR evaluates the system’s accuracy by looking at the rank of the highest-placed relevant document. Specifically, it’s the average of the reciprocals of these ranks across all the queries.
+     - 
+   - Mean Average Precision (MAP):
+     - 
 ---
 Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
