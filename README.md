@@ -96,9 +96,14 @@ Run:
 1. Input Enhancement:
     - Query Transformation:
         - HyDE method: Use the original query to generate a pseudo document, which is later used as the query for retrieval.
+        - [Github](https://github.com/texttron/hyde)
+        - [paper](https://arxiv.org/pdf/2212.10496)
     - Query Rewrite: Generate additional questions (with LLM) based on the primary query to obtain a more precise retrieved result.
+        - RAG Fusion: RAG-Fusion是一个旨在弥合传统搜索模式与人类查询的多面维度之间差距的搜索方法。它受到增强检索生成(RAG)能力的启发,通过采用多种查询生成和互补排序融合来重新排列搜索结果,使之更进一步。
+          - [github](https://github.com/Raudaschl/rag-fusion)
 
 2. Retriever Enhancement:
+    - Fine-tunning embedding layer: [Embedding](https://docs.llamaindex.ai/en/stable/examples/finetuning/embeddings/finetune_embedding/) 
     - Knowledge Graph Retrieval: RAG with KG for Customer Service Question Answering [Arxiv](https://arxiv.org/abs/2404.17723) 
     - Hybrid Retrieval:
         - Hybrid retrieval denotes the concurrent employment of a diverse array of retrieval methodologies or the extraction of information from multiple distinct sources (Dense Retriever and Sparse Retriever).
@@ -108,6 +113,9 @@ Run:
         2. RAPTOR employs recursive embedding, clustering, and summarization of text chunks until further clustering becomes infeasible, thereby constructing a multi-level tree structure.
         3. Chunk by Segment.
     - Reranking: Rerank the retrieved contents (from multiple retrievers).
+    - Reciprocal Rank Fusion(倒数排序融合): 根据倒数Rank计算每段context在每个 retriever 上的 score取平均/融合分数
+    - [Paper](https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf)
+    - [Reciprocal Rerank Fusion Retriever](https://github.com/Raudaschl/rag-fusion)
 
 #### 7.1.3
 
@@ -128,13 +136,13 @@ Run:
    - [使用教程](https://github.com/explodinggradients/ragas/blob/main/docs/howtos/integrations/llamaindex.ipynb)
 
    2.1 Main aspects:
-   - retriever: 
-     - Context_precision: (85%)  Measures how relevant the retrieved context is to the question, conveying the quality of the retrieval pipeline
-     - 大概就是看高相关度 context 是否在靠前的位置被召回
-     - ![](./image/context_precision.png)
-     - Context_recall: Measures the retriever’s ability to retrieve all necessary information required to answer the question. It is computed based on the ground truth and the retrieved context.
-     - 为了从基本真实答案中估算上下文召回率，需要对ground truth中的每个句子进行分析，以确定其是否可归因于检索到的上下文。在理想情况下，ground truth中的所有句子都应归属于检索到的上下文。
-     - ![](./image/context_recall.png)
+   - retriever:
+       - Context_precision: (85%)  Measures how relevant the retrieved context is to the question, conveying the quality of the retrieval pipeline
+       - 大概就是看高相关度 context 是否在靠前的位置被召回
+       - ![](./image/context_precision.png)
+       - Context_recall: Measures the retriever’s ability to retrieve all necessary information required to answer the question. It is computed based on the ground truth and the retrieved context.
+       - 为了从基本真实答案中估算上下文召回率，需要对ground truth中的每个句子进行分析，以确定其是否可归因于检索到的上下文。在理想情况下，ground truth中的所有句子都应归属于检索到的上下文。
+       - ![](./image/context_recall.png)
    - Generator(LLM): 
      - Faithfulness: Evaluate hallucinations, measures the factual consistency of the answer to the context based on the question. That is, whether the answer matches the retrieved context.
      - 如果答案中的所有主张都可以从给定的上下文中推断出来，那么生成的答案就被认为是忠实的
@@ -144,6 +152,7 @@ Run:
      - 答案相关性被定义为原始问题与大量人工问题的平均余弦相似度，而人工问题是根据答案生成的（逆向工程）。
 
 3. llamaindex
+   - 
 
 4. Traditional Information retrieved evaluation
    - Hit Rate:

@@ -73,6 +73,21 @@ def index_and_ingest_knowledge_graph(data_dir):
     print("graph index done")
     return index_graph
 
+from llama_index.llms.openai import OpenAI
+from llama_index.finetuning import generate_qa_embedding_pairs
+from llama_index.core.evaluation import EmbeddingQAFinetuneDataset
+
+train_dataset = generate_qa_embedding_pairs(
+    llm=OpenAI(model="gpt-3.5-turbo"), nodes=train_nodes
+)
+val_dataset = generate_qa_embedding_pairs(
+    llm=OpenAI(model="gpt-3.5-turbo"), nodes=val_nodes
+)
+
+train_dataset.save_json("train_dataset.json")
+val_dataset.save_json("val_dataset.json")
+
+
 
 # 重排 index 的retrieve 方法
 def retriever_rerank(index):
